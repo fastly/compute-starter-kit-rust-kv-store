@@ -1,4 +1,4 @@
-use fastly::ObjectStore;
+use fastly::KVStore;
 use fastly::{Error, Request, Response};
 
 #[fastly::main]
@@ -10,12 +10,12 @@ fn main(req: Request) -> Result<Response, Error> {
     }
 
     /*
-        Construct an ObjectStore instance which is connected to the Object Store named `my-store`
+        Construct an KVStore instance which is connected to the KV Store named `my-store`
 
-        [Documentation for the ObjectStore open method can be found here](https://docs.rs/fastly/latest/fastly/struct.ObjectStore.html#method.open)
+        [Documentation for the KVStore open method can be found here](https://docs.rs/fastly/latest/fastly/struct.KVStore.html#method.open)
     */
     let mut store =
-        ObjectStore::open("my-store").map(|store| store.expect("ObjectStore exists"))?;
+        KVStore::open("my-store").map(|store| store.expect("KVStore exists"))?;
 
     let path = req.get_path();
     if path == "/readme" {
@@ -28,22 +28,22 @@ fn main(req: Request) -> Result<Response, Error> {
         };
     } else {
         /*
-        Adds or updates the key `hello` in the Object Store with the value `world`.
+        Adds or updates the key `hello` in the KV Store with the value `world`.
 
-        Note: Object stores are eventually consistent, this means that the updated value associated
+        Note: KV stores are eventually consistent, this means that the updated value associated
         with the key may not be available to read from all edge locations immediately and some edge
         locations may continue returning the previous value associated with the key.
 
-        [Documentation for the insert method can be found here](https://docs.rs/fastly/latest/fastly/struct.ObjectStore.html#method.insert)
+        [Documentation for the insert method can be found here](https://docs.rs/fastly/latest/fastly/struct.KVStore.html#method.insert)
         */
         store.insert("hello", "world")?;
 
         /*
-        Retrieve the value associated with the key `hello` in the Object Store.
+        Retrieve the value associated with the key `hello` in the KV Store.
         If the key does not exist, then `None` is returned.
         If the key does exist, then an `Some<Body>` is returned.
 
-        [Documentation for the lookup method can be found here](https://docs.rs/fastly/latest/fastly/struct.ObjectStore.html#method.lookup)
+        [Documentation for the lookup method can be found here](https://docs.rs/fastly/latest/fastly/struct.KVStore.html#method.lookup)
         */
         let entry = store.lookup("hello")?;
 
