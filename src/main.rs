@@ -14,8 +14,7 @@ fn main(req: Request) -> Result<Response, Error> {
 
         [Documentation for the KVStore open method can be found here](https://docs.rs/fastly/latest/fastly/struct.KVStore.html#method.open)
     */
-    let mut store =
-        KVStore::open("my-store").map(|store| store.expect("KVStore exists"))?;
+    let mut store = KVStore::open("my-store").map(|store| store.expect("KVStore exists"))?;
 
     let path = req.get_path();
     if path == "/readme" {
