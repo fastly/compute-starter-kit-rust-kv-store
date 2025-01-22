@@ -1,3 +1,4 @@
+use fastly::kv_store::KVStoreError;
 use fastly::KVStore;
 use fastly::{Error, Request, Response};
 
@@ -10,20 +11,20 @@ fn main(req: Request) -> Result<Response, Error> {
     }
 
     /*
-        Construct an KVStore instance which is connected to the KV Store named `my-store`
+        Construct a KVStore instance which is connected to the KV Store named `my-store`
 
         [Documentation for the KVStore open method can be found here](https://docs.rs/fastly/latest/fastly/struct.KVStore.html#method.open)
     */
-    let mut store = KVStore::open("my-store").map(|store| store.expect("KVStore exists"))?;
+    let store = KVStore::open("my-store").map(|store| store.expect("KVStore exists"))?;
 
     let path = req.get_path();
     if path == "/readme" {
-        let entry = store.lookup("readme")?;
-
-        return match entry {
-            // Stream the value back to the user-agent.
-            Some(entry) => Ok(Response::from_body(entry)),
-            None => Ok(Response::from_body("Not Found").with_status(404)),
+        return match store.lookup("readme") {
+            Ok(mut l) => Ok(Response::from_body(l.take_body())),
+            Err(KVStoreError::ItemNotFound) => {
+                return Ok(Response::from_body("Not Found").with_status(404))
+            }
+            Err(_e) => return Ok(Response::from_body("Lookup Error").with_status(503)),
         };
     } else {
         /*
@@ -44,12 +45,12 @@ fn main(req: Request) -> Result<Response, Error> {
 
         [Documentation for the lookup method can be found here](https://docs.rs/fastly/latest/fastly/struct.KVStore.html#method.lookup)
         */
-        let entry = store.lookup("hello")?;
-
-        return match entry {
-            // Stream the value back to the user-agent.
-            Some(entry) => Ok(Response::from_body(entry)),
-            None => Ok(Response::from_body("Not Found").with_status(404)),
+        return match store.lookup("hello") {
+            Ok(mut l) => Ok(Response::from_body(l.take_body())),
+            Err(KVStoreError::ItemNotFound) => {
+                return Ok(Response::from_body("Not Found").with_status(404))
+            }
+            Err(_e) => return Ok(Response::from_body("Lookup Error").with_status(503)),
         };
     }
 }
