@@ -19,13 +19,13 @@ fn main(req: Request) -> Result<Response, Error> {
 
     let path = req.get_path();
     if path == "/readme" {
-        return match store.lookup("readme") {
+        match store.lookup("readme") {
             Ok(mut l) => Ok(Response::from_body(l.take_body())),
             Err(KVStoreError::ItemNotFound) => {
-                return Ok(Response::from_body("Not Found").with_status(404))
+                Ok(Response::from_body("Not Found").with_status(404))
             }
-            Err(_e) => return Ok(Response::from_body("Lookup Error").with_status(503)),
-        };
+            Err(_e) => Ok(Response::from_body("Lookup Error").with_status(503)),
+        }
     } else {
         /*
         Adds or updates the key `hello` in the KV Store with the value `world`.
@@ -45,12 +45,12 @@ fn main(req: Request) -> Result<Response, Error> {
 
         [Documentation for the lookup method can be found here](https://docs.rs/fastly/latest/fastly/struct.KVStore.html#method.lookup)
         */
-        return match store.lookup("hello") {
+        match store.lookup("hello") {
             Ok(mut l) => Ok(Response::from_body(l.take_body())),
             Err(KVStoreError::ItemNotFound) => {
-                return Ok(Response::from_body("Not Found").with_status(404))
+                Ok(Response::from_body("Not Found").with_status(404))
             }
-            Err(_e) => return Ok(Response::from_body("Lookup Error").with_status(503)),
-        };
+            Err(_e) => Ok(Response::from_body("Lookup Error").with_status(503)),
+        }
     }
 }
