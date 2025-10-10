@@ -22,7 +22,15 @@ fastly compute publish
 
 ## Creating and attaching the KV Store
 
-This project makes use of a resource called a KV Store. To create a new KV Store that will work with this code, you'll need to create a KV Store called `my-store`.
+This project makes use of a resource called a KV Store, and this starter kit takes care of a few prerequisites for you:
+- creating a KV Store
+- linking the KV store to your service upon deployment
+- creating a mock-up of a KV Store that your service may access when running locally via `fastly compute serve`
+
+These tasks are handled using the `[setup]` and `[local_server]` sections of the [fastly.toml](https://www.fastly.com/documentation/reference/compute/fastly-toml/) file included with this starter kit.
+
+In general, when using KV Stores, you'll need to take care of these things. The fastly CLI and UI provide interfaces for these activities.
+
 
 ```shell
 fastly kv-store create --name="my-store"
