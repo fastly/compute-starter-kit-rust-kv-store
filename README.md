@@ -29,14 +29,13 @@ This project makes use of a resource called a KV Store, and this starter kit tak
 
 These tasks are handled using the `[setup]` and `[local_server]` sections of the [fastly.toml](https://www.fastly.com/documentation/reference/compute/fastly-toml/) file included with this starter kit.
 
-In general, when using KV Stores, you'll need to take care of these things. The fastly CLI and UI provide interfaces for these activities.
-
+In general, when using KV Stores, you'll need to take care of these things. The Fastly CLI and UI provide interfaces for these activities.
 
 ```shell
 fastly kv-store create --name="my-store"
 ```
 
-KV Stores are accessible my multiple Fastly services (this is part of the power of KV Stores!). You need to grant access to your KV Store to your service. To do this, you need to know your Service ID and your KV Store ID. To get the KV Store ID, use the kv-store subcommand.
+KV Stores are accessible by multiple Fastly services (this is part of the power of KV Stores!). You need to grant access to your KV Store to your service. To do this, you need to know your Service ID and your KV Store ID. To get the KV Store ID, use the kv-store subcommand.
 
 ```shell
 fastly kv-store list
