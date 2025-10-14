@@ -20,6 +20,35 @@ To create and deploy to a new Fastly Service run the command and follow the inst
 fastly compute publish
 ```
 
+## Creating and attaching the KV Store
+
+This project makes use of a resource called a KV Store, and this starter kit takes care of a few prerequisites for you:
+- creating a KV Store
+- linking the KV store to your service upon deployment
+- creating a mock-up of a KV Store that your service may access when running locally via `fastly compute serve`
+
+These tasks are handled using the `[setup]` and `[local_server]` sections of the [fastly.toml](https://www.fastly.com/documentation/reference/compute/fastly-toml/) file included with this starter kit.
+
+In general, when using KV Stores, you'll need to take care of these things. The fastly CLI and UI provide interfaces for these activities.
+
+
+```shell
+fastly kv-store create --name="my-store"
+```
+
+KV Stores are accessible my multiple Fastly services (this is part of the power of KV Stores!). You need to grant access to your KV Store to your service. To do this, you need to know your Service ID and your KV Store ID. To get the KV Store ID, use the kv-store subcommand.
+
+```shell
+fastly kv-store list
+```
+
+Then, link the KV Store to a new clone of your service, using the KV Store ID and Service ID, and activate the new version.
+
+```shell
+fastly resource-link create --resource-id=RESOURCE-ID --service-id=SERVICE-ID --version=latest --autoclone
+fastly service-version activate --version=latest --service-id=SERVICE-ID
+```
+
 That is it, we now have a Fastly Service, a Fastly KV Store and have them linked together!
 
 You can view real-time logs for the Fastly Service by running:
